@@ -5,6 +5,7 @@ import logging
 import json
 import pyttsx3
 import threading
+import queue
 
 pygame.init()
 WIDTH, HEIGHT = 800, 600
@@ -28,23 +29,33 @@ tts_engine = pyttsx3.init()
 tts_engine.setProperty('rate', 150)  
 tts_engine.setProperty('volume', 0.9)
 
-tts_lock = threading.Lock()
-currently_speaking = False
+tts_queue = queue.Queue()
+
+def tts_worker():
+    while True:
+        word = tts_queue.get()
+        if word is None:
+            break
+        try:
+            tts_engine.stop()
+        except Exception:
+            pass
+        tts_engine.say(word)
+        tts_engine.runAndWait()
+        pygame.time.wait(500)
+
+# Start the TTS worker thread
+threading.Thread(target=tts_worker, daemon=True).start()
 
 def speak_word(word, repeat=1):
-    global currently_speaking
-    
-    def speak_thread():
-        global currently_speaking
-        with tts_lock:
-            currently_speaking = True
-            for _ in range(repeat):
-                tts_engine.say(word)
-                tts_engine.runAndWait()
-                pygame.time.wait(500)
-            currently_speaking = False
-    
-    threading.Thread(target=speak_thread, daemon=True).start()
+    # Clear the queue before adding the new word
+    while not tts_queue.empty():
+        try:
+            tts_queue.get_nowait()
+        except queue.Empty:
+            break
+    for _ in range(repeat):
+        tts_queue.put(word)
 
 class ClientInterface:
     def __init__(self):
@@ -59,11 +70,20 @@ class ClientInterface:
             
             response = b""
             while True:
-                data = sock.recv(1024)
-                if not data:
-                    break
-                response += data
+                try:
+                    data = sock.recv(1024)
+                    if not data:
+                        break
+                    response += data
+                except ConnectionResetError as cre:
+                    logging.warning(f"Connection was closed by the server: {cre}")
+                    return {'status': 'ERROR', 'message': 'Connection closed by server. Please try again later.'}
+                except Exception as e:
+                    logging.warning(f"Error receiving data: {e}")
+                    return {'status': 'ERROR', 'message': 'Network error occurred.'}
             
+            if b'\r\n\r\n' not in response:
+                return {'status': 'ERROR', 'message': 'Invalid response from server.'}
             headers_raw, body_raw = response.split(b'\r\n\r\n', 1)
             headers = headers_raw.decode().split('\r\n')
             status_line = headers[0]
@@ -74,6 +94,9 @@ class ClientInterface:
                 logging.warning(f"Server returned error: {status_line}")
                 return {'status': 'ERROR', 'message': f'Server error: {status_line}'}
 
+        except ConnectionResetError as cre:
+            logging.warning(f"Connection was closed by the server: {cre}")
+            return {'status': 'ERROR', 'message': 'Connection closed by server. Please try again later.'}
         except Exception as e:
             logging.warning(f"Error during HTTP request: {e}")
             return {'status': 'ERROR', 'message': 'Connection error'}
@@ -115,23 +138,50 @@ def game_loop(player_id):
     input_text = ""
     input_active = True
     last_result = None
-    current_word = ""
+    current_word = None
     word_spoken = False
-    
+    last_word = None
+    last_game_active = None
+    last_turn_id = None
     replay_button = pygame.Rect(WIDTH // 2 - 60, HEIGHT // 2 + 180, 120, 40)
-    
     while True:
         screen.fill(WHITE)
-        game_state = client.get_game_state()
+        try:
+            game_state = client.get_game_state()
+            print("DEBUG: game_state=", game_state)
+        except Exception as e:
+            draw_text(f"Exception: {e}", SMALL_FONT, RED, screen, WIDTH // 2, HEIGHT // 2)
+            pygame.display.flip()
+            clock.tick(15)
+            continue
+        if not game_state or not isinstance(game_state, dict):
+            draw_text("No response from server", SMALL_FONT, RED, screen, WIDTH // 2, HEIGHT // 2)
+            pygame.display.flip()
+            clock.tick(15)
+            continue
+        if game_state.get('status') != 'OK':
+            draw_text(f"Error: {game_state.get('message', 'Unknown error')}", SMALL_FONT, RED, screen, WIDTH // 2, HEIGHT // 2)
+            pygame.display.flip()
+            clock.tick(15)
+            continue
+        game_active = game_state.get('game_active')
+        current_player_id = game_state.get('current_player_id')
+        is_my_turn = (player_id == current_player_id)
+
+        # Only reset when game_active changes from False to True
+        if last_game_active is not None and last_game_active != game_active and game_active:
+            current_word = None
+            word_spoken = False
+            last_word = None
+        last_game_active = game_active
 
         if game_state.get('status') != 'OK':
             draw_text("Error connecting to server", SMALL_FONT, RED, screen, WIDTH // 2, HEIGHT // 2)
             
-        elif not game_state.get('game_active'):
+        elif not game_active:
             msg = game_state.get('message', 'Waiting for game to start...')
             draw_text(msg, SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT // 2)
-            word_spoken = False  
-
+            # Don't reset word_spoken here
             if 'final_scores' in game_state:
                 y_pos = HEIGHT // 2 + 50
                 draw_text("Final Scores:", SMALL_FONT, BLACK, screen, WIDTH // 2, y_pos)
@@ -144,9 +194,6 @@ def game_loop(player_id):
                 draw_text("Press S to start a new game", SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT - 100)
                 
         else:
-            current_player_id = game_state.get('current_player_id')
-            is_my_turn = (player_id == current_player_id)
-
             current_round = game_state.get('current_round', 0)
             max_rounds = game_state.get('max_rounds', 10)
             draw_text(f"Round {current_round + 1} of {max_rounds}", SMALL_FONT, BLACK, screen, WIDTH // 2, 30)
@@ -156,11 +203,12 @@ def game_loop(player_id):
             draw_text(score_text, SMALL_FONT, BLACK, screen, WIDTH // 2, 70)
             
             if is_my_turn:
-                new_word = game_state.get('word', '')
+                new_word = game_state.get('word', None)
                 
-                if new_word != current_word:
+                if new_word != last_word:
                     current_word = new_word
                     word_spoken = False
+                    last_word = new_word
                 
                 if not word_spoken and current_word:
                     speak_word(current_word)
@@ -177,9 +225,12 @@ def game_loop(player_id):
                 draw_input_box(input_text, input_active)
                 draw_text("Type the word and press Enter", SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT // 2 + 120)
             else:
+                if last_turn_id != current_player_id:
+                    current_word = None
+                    word_spoken = False
+                    last_word = None
+                    last_turn_id = current_player_id
                 draw_text(f"Waiting for Player {current_player_id}'s turn...", SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT // 2)
-                current_word = "" 
-                word_spoken = False
             
             if 'last_turn' in game_state and game_state['last_turn']:
                 last_turn = game_state['last_turn']
@@ -206,7 +257,7 @@ def game_loop(player_id):
                 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if game_state.get('game_active', False) and player_id == game_state.get('current_player_id', ''):
-                    if replay_button.collidepoint(event.pos) and current_word and not currently_speaking:
+                    if replay_button.collidepoint(event.pos) and current_word:
                         speak_word(current_word)
                 
             elif event.type == pygame.KEYDOWN:

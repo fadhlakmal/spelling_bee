@@ -4,8 +4,9 @@ import time
 import sys
 import logging
 import multiprocessing
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from http import HttpServer
+import select
 
 class BackendList:
 	def __init__(self):
@@ -26,32 +27,31 @@ class BackendList:
 
 
 
-def ProcessTheClient(connection,address,backend_sock,mode='toupstream'):
-		try:
-			while True:
-				try:
-					if (mode=='toupstream'):
-						datafrom_client = connection.recv(4096)
-						if datafrom_client:
-								backend_sock.sendall(datafrom_client)
-						else:
-								backend_sock.close()
-								break
-					elif (mode=='toclient'):
-						datafrom_backend = backend_sock.recv(4096)
-
-						if datafrom_backend:
-								connection.sendall(datafrom_backend)
-						else:
-								connection.close()
-								break
-
-				except OSError as e:
-					pass
-		except Exception as ee:
-			logging.warning(f"error {str(ee)}")
-		connection.close()
-		return
+def ProcessTheClient(connection, address, backend_sock):
+    try:
+        sockets = [connection, backend_sock]
+        while True:
+            readable, _, exceptional = select.select(sockets, [], sockets, 1)
+            if exceptional:
+                break
+            for sock in readable:
+                try:
+                    data = sock.recv(4096)
+                    if not data:
+                        return
+                    if sock is connection:
+                        backend_sock.sendall(data)
+                    else:
+                        connection.sendall(data)
+                except Exception as e:
+                    logging.warning(f"Socket error: {e}")
+                    return
+    except Exception as ee:
+        logging.warning(f"error {str(ee)}")
+    finally:
+        connection.close()
+        backend_sock.close()
+    return
 
 
 
@@ -64,7 +64,7 @@ def Server():
 	my_socket.bind(('0.0.0.0', 44444))
 	my_socket.listen(1)
 
-	with ProcessPoolExecutor(20) as executor:
+	with ThreadPoolExecutor(20) as executor:
 		while True:
 				connection, client_address = my_socket.accept()
 				backend_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,18 +73,12 @@ def Server():
 				logging.warning(f"{client_address} connecting to {backend_address}")
 				try:
 					backend_sock.connect(backend_address)
-
-					#logging.warning("connection from {}".format(client_address))
-					toupstream = executor.submit(ProcessTheClient, connection, client_address,backend_sock,'toupstream')
-					the_clients.append(toupstream)
-					toclient = executor.submit(ProcessTheClient, connection, client_address,backend_sock,'toclient')
-					the_clients.append(toclient)
-
-					#menampilkan jumlah process yang sedang aktif
-					jumlah = ['x' for i in the_clients if i.running()==True]
-					#print(jumlah)
+					fut = executor.submit(ProcessTheClient, connection, client_address, backend_sock)
+					the_clients.append(fut)
 				except Exception as err:
 					logging.error(err)
+					connection.close()
+					backend_sock.close()
 					pass
 
 
