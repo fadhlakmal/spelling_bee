@@ -1,0 +1,110 @@
+advantage,noun,a condition or circumstance that puts one in a favorable or superior position.
+analyze,verb,examine methodically and in detail the constitution or structure of (something, especially information), typically for purposes of explanation and interpretation.
+brilliant,adjective,exceptionally clever or talented.
+challenge,noun,a call or summons to engage in a contest, fight, or competition.
+conscious,adjective,aware of and responding to one's surroundings; awake.
+definitely,adverb,without doubt (used for emphasis).
+endeavor,verb,try hard to do or achieve something.
+fascinate,verb,draw the attention of (someone) enthrall.
+gorgeous,adjective,beautiful; very attractive.
+happiness,noun,the state of being happy.
+independent,adjective,free from outside control; not subject to another's authority.
+magnificent,adjective,impressively beautiful, elaborate, or extravagant; striking.
+necessary,adjective,required to be done, achieved, or present; essential.
+occurrence,noun,an incident or event.
+privilege,noun,a special right, advantage, or immunity granted or available only to a particular person or group.
+rhythm,noun,a strong, regular, repeated pattern of movement or sound.
+separate,verb,cause to move or be apart.
+sincerely,adverb,in a genuine or heartfelt manner.
+unanimous,adjective,fully in agreement.
+vocabulary,noun,the body of words used in a particular language.
+absolute,adjective,not qualified or diminished in any way; total.
+accessible,adjective,able to be easily entered, approached, or used.
+accommodate,verb,provide lodging or sufficient space for.
+acknowledge,verb,accept or admit the existence or truth of.
+advantageous,adjective,providing an advantage; favorable.
+affect,verb,have an effect on; make a difference to.
+almost,adverb,very nearly; all but.
+alone,adjective,by oneself; on one's own.
+amateur,noun,a person who engages in a pursuit, especially a sport, on an unpaid rather than a professional basis.
+ambiguous,adjective,open to more than one interpretation; having a double meaning.
+analysis,noun,detailed examination of the elements or structure of something.
+apparent,adjective,clearly visible or understood; obvious.
+appearance,noun,the way that someone or something looks.
+approach,verb,come near or nearer to (someone or something) in distance or time.
+appropriate,adjective,suitable or proper in the circumstances.
+argument,noun,a reason or set of reasons given with the aim of persuading others that an action or idea is right or wrong.
+articulate,verb,express (an idea or feeling) fluently and coherently.
+associate,verb,connect (someone or something) with something else in one's mind.
+athletic,adjective,relating to athletes or athletics; physically strong and active.
+audible,adjective,able to be heard.
+believe,verb,accept (something) as true; feel sure of the truth of.
+beneficial,adjective,favorable or advantageous; resulting in good.
+business,noun,a person's regular occupation, profession, or trade.
+category,noun,a class or division of people or things regarded as having particular shared characteristics.
+cemetery,noun,a large burial ground, especially one not in a churchyard.
+challenge,noun,a call or summons to engage in a contest, fight, or competition.
+committee,noun,a group of people appointed for a specific function, typically as part of a larger group.
+conscious,adjective,aware of and responding to one's surroundings; awake.
+convenient,adjective,fitting in well with a person's needs, activities, and plans.
+correspond,verb,have a close similarity; match or agree exactly.
+criticize,verb,indicate the faults of (someone or something) in a disapproving way.
+definite,adjective,clearly stated or decided; not vague or doubtful.
+discipline,noun,the practice of training people to obey rules or a code of behavior, using punishment to correct disobedience.
+effect,noun,a change which is a result or consequence of an action or other cause.
+embarrass,verb,cause (someone) to feel awkward, self-conscious, or ashamed.
+environment,noun,the surroundings or conditions in which a person, animal, or plant lives or operates.
+especially,adverb,to a great extent; pre-eminently.
+exaggerate,verb,represent (something) as being larger, better, or worse than it really is.
+familiar,adjective,well known from long or close association.
+foreign,adjective,of, from, in, or characteristic of a country or language other than one's own.
+government,noun,the governing body of a nation, state, or community.
+guarantee,verb,provide a formal assurance or promise regarding (products, rights, or services).
+hindrance,noun,a thing that provides resistance, delay, or obstruction to something or someone.
+independent,adjective,free from outside control; not subject to another's authority.
+interrupt,verb,stop the continuous progress of (an activity or process).
+judgment,noun,the ability to make considered decisions or come to sensible conclusions.
+knowledge,noun,facts, information, and skills acquired by a person through experience or education; the theoretical or practical understanding of a subject.
+library,noun,a building or room containing collections of books, periodicals, and sometimes films and recorded music for use or borrowing by the public or the members of an institution.
+lieutenant,noun,a deputy or substitute acting for a superior.
+mischievous,adjective,causing or showing a fondness for causing trouble in a playful way.
+neighborhood,noun,a district, especially one forming a community within a town or city.
+noticeable,adjective,easily seen or noticed; clear or apparent.
+occasion,noun,a particular event, instance, or time.
+occurred,verb,happen; take place.
+official,adjective,relating to an authority or public body and its activities and responsibilities.
+opportunity,noun,a set of circumstances that makes it possible to do something.
+original,adjective,present or existing from the beginning; first or earliest.
+parallel,adjective,of lines, planes, or surfaces extending in the same direction, equidistant at all points, and never converging or diverging.
+parliament,noun,in some countries, the highest legislature, consisting of the sovereign, the House of Lords, and the House of Commons.
+particularly,adverb,to a higher degree than is usual or expected; especially.
+possession,noun,the state of having, owning, or controlling something.
+prefer,verb,like (something) better than another.
+privilege,noun,a special right, advantage, or immunity granted or available only to a particular person or group.
+probably,adverb,almost certainly; as far as one knows or can tell.
+promise,verb,assure someone that one will definitely do, give, or arrange something; undertake or declare that something will happen.
+receive,verb,be given, presented with, or paid (something).
+recommend,verb,put forward (someone or something) with approval as being suitable for a particular purpose or role.
+relevant,adjective,closely connected or appropriate to the matter at hand.
+restaurant,noun,a place where people pay to sit and eat meals that are cooked and served on the premises.
+rhythm,noun,a strong, regular, repeated pattern of movement or sound.
+ridiculous,adjective,deserving or inviting ridicule or mockery; absurd.
+secretary,noun,a person employed by an individual or in an office to assist with correspondence, keep records, make appointments, and carry out similar tasks.
+separate,verb,cause to move or be apart.
+sincerely,adverb,in a genuine or heartfelt manner.
+stationery,noun,writing and other office materials.
+strengthen,verb,make or become stronger.
+succeed,verb,achieve the desired aim or result.
+suddenly,adverb,quickly and unexpectedly.
+surprise,noun,an unexpected or astonishing event, fact, or thing.
+unnecessary,adjective,not needed.
+unusual,adjective,not habitually or commonly occurring or done.
+vacuum,noun,a space entirely devoid of matter.
+vegetable,noun,a plant or part of a plant used as food, typically as accompaniment to meat or fish dishes, or in a salad.
+warrant,verb,justify or necessitate (a certain course of action).
+weather,noun,the state of the atmosphere at a particular place and time as regards heat, dryness, sunshine, wind, rain, etc.
+weird,adjective,suggesting something supernatural; unearthly.
+whether,conjunction,expressing a doubt or choice between two alternatives.
+writing,noun,the activity or skill of writing.
+yacht,noun,a medium-sized sailboat equipped for cruising or racing.
+zealous,adjective,having or showing zeal.
