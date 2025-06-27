@@ -25,7 +25,11 @@ kalo pake lb run 3 server
 python server_thread_http.py 8889
 python server_thread_http.py 8890
 python server_thread_http.py 8891
+```
 
+run lb
+```console
+python lb_process.py
 ```
 
 jalanin 3 player (harus)
