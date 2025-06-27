@@ -46,14 +46,15 @@ class ProcessTheClient(threading.Thread):
 
 
 class Server(threading.Thread):
-	def __init__(self):
+	def __init__(self, port=8889):
 		self.the_clients = []
 		self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		threading.Thread.__init__(self)
+		self.port = port
 
 	def run(self):
-		self.my_socket.bind(('0.0.0.0', 8889))
+		self.my_socket.bind(('0.0.0.0', int(self.port)))
 		self.my_socket.listen(1)
 		while True:
 			self.connection, self.client_address = self.my_socket.accept()
@@ -66,7 +67,9 @@ class Server(threading.Thread):
 
 
 def main():
-	svr = Server()
+	port = sys.argv[1] if len(sys.argv) > 1 else 8889
+
+	svr = Server(port)
 	svr.start()
 
 if __name__=="__main__":

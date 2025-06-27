@@ -48,7 +48,7 @@ def speak_word(word, repeat=1):
 
 class ClientInterface:
     def __init__(self):
-        self.server_address = ('localhost', 8889)
+        self.server_address = ('localhost', 44444)
 
     def send_request(self, request_line):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
