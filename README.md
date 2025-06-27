@@ -19,6 +19,15 @@ python server.py
 python server_thread_http.py
 ```
 
+kalo pake lb run 3 server
+```console
+# python server_thread_http.py {port}
+python server_thread_http.py 8889
+python server_thread_http.py 8890
+python server_thread_http.py 8891
+
+```
+
 jalanin 3 player (harus)
 ```console
 # python wg_player.py {player_id}
