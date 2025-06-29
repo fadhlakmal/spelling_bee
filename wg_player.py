@@ -148,20 +148,15 @@ def game_loop(player_id):
             current_player_id = game_state.get('current_player_id')
             is_my_turn = (player_id == current_player_id)
 
-            # Display current player's ID
             draw_text(f"Your ID: {player_id}", SMALL_FONT, BLACK, screen, WIDTH * 0.15, 30, center=False)
             
             current_round = int(game_state.get('current_round', 0))
             max_rounds = int(game_state.get('max_rounds', 10))
-            # Display round information (can be removed if rounds are not relevant in lives mode)
-            # draw_text(f"Round {current_round + 1} of {max_rounds}", SMALL_FONT, BLACK, screen, WIDTH // 2, 30)
             
-            # Display lives
             lives: Dict[str, int] = game_state.get('lives', {})
             lives_text = " | ".join([f"Player {pid}: {'♥' * count}" for pid, count in lives.items()])
             draw_text(lives_text, SMALL_FONT, BLACK, screen, WIDTH // 2, 70)
 
-            # Display time remaining
             time_remaining = int(game_state.get('time_remaining', 0))
             draw_text(f"Time: {time_remaining}s", SMALL_FONT, BLACK, screen, WIDTH * 0.85, 30, center=False)
             
@@ -178,14 +173,12 @@ def game_loop(player_id):
                 
                 draw_text("Spell this word", SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 100)
                 
-                # Display word type and definition
                 word_type = game_state.get('word_type', '')
                 word_definition = game_state.get('word_definition', '')
 
                 if word_type:
                     draw_text(f"({word_type})", SMALL_FONT, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 70)
                 if word_definition:
-                    # Wrap definition if it's too long
                     words_in_definition = word_definition.split(' ')
                     lines = []
                     current_line = []
@@ -203,9 +196,8 @@ def game_loop(player_id):
                         y_offset += 25
 
                 if word_spoken:
-                    # Reposition or remove this if the above text takes up too much space
                     # draw_text("Listen and spell", FONT, BLUE, screen, WIDTH // 2, HEIGHT // 2 - 40)
-                    pass # Removing this line to avoid overlapping with definition
+                    pass
                 
                 pygame.draw.rect(screen, BLUE, replay_button)
                 draw_text("Replay Word", MSG_FONT, WHITE, screen, replay_button.centerx, replay_button.centery)
@@ -232,7 +224,6 @@ def game_loop(player_id):
                 else:
                     draw_text(f"Incorrect. Correct spelling: {last_turn.get('word', '')}", SMALL_FONT, RED, screen, WIDTH // 2, y_pos)
                 
-                # Display word type and definition for last turn
                 last_word_type = last_turn.get('word_type', '')
                 last_word_definition = last_turn.get('word_definition', '')
                 if last_word_type:
@@ -240,7 +231,6 @@ def game_loop(player_id):
                     draw_text(f"Type: {last_word_type}", MSG_FONT, BLACK, screen, WIDTH // 2, y_pos)
                 if last_word_definition:
                     y_pos += 25
-                    # Wrap definition if it's too long
                     words_in_definition = last_word_definition.split(' ')
                     lines = []
                     current_line = []
@@ -256,7 +246,6 @@ def game_loop(player_id):
                         draw_text(line, MSG_FONT, BLACK, screen, WIDTH // 2, y_pos)
                         y_pos += 25
             
-            # Display general game messages (like correct/incorrect verdict)
             if 'message' in game_state:
                 draw_text(game_state['message'], MSG_FONT, BLUE, screen, WIDTH // 2, HEIGHT // 2 + 150)
 
@@ -273,10 +262,9 @@ def game_loop(player_id):
             elif event.type == pygame.KEYDOWN:
                 if not game_state.get('game_active') and player_id == '1' and event.key == pygame.K_s:
                     client.start_game()
-                    # CRITICAL FIX: Ensure message is updated after game start as well
-                    # message = response.get('message', 'Error processing submission.') # This line was causing issues before
-                    game_state = client.get_game_state() # Re-fetch full game state
-                    input_text = "" # Reset input after game start
+                    # message = response.get('message', 'Error processing submission.')
+                    game_state = client.get_game_state()
+                    input_text = ""
                     continue
                 
                 current_player_id = game_state.get('current_player_id')
@@ -284,7 +272,6 @@ def game_loop(player_id):
                     if event.key == pygame.K_RETURN:
                         if input_text:
                             response = client.submit_spelling(player_id, input_text)
-                            # CRITICAL FIX: Update game_state with the response from the submission
                             if response.get('status') == 'OK':
                                 game_state.update(response) 
                             input_text = ""
